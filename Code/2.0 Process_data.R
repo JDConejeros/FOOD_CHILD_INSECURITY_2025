@@ -65,7 +65,7 @@ casen <- casen |>
 
 ## Principal Predictor: Overcrowding ---- 
 
-casen <- casen|>
+casen <- casen |>
   mutate(
     # Number of households in the dwelling
     nhom_viv = case_when(
@@ -182,13 +182,32 @@ casen <- casen |>
 
 psych::alpha(casen[, c("r8a", "r8b", "r8c", "r8d", "r8e", "r8f", "r8g", "r8h")]) # 0.87
 
+
+## Outcome: Nutritional state child ----
+
+casen <- casen |> 
+  mutate(sn_child = if_else(s2==-88, NA_real_, s2)) |> 
+  mutate(sn_child = factor(sn_child, levels=c(1:4), 
+                           labels = c(
+                            "Underweight", 
+                            "Normal",
+                            "Overweight", 
+                            "Obese"
+                           ))) |> 
+  mutate(underw = factor(if_else(sn_child=="Underweight", 1, 0), levels = c(0,1))) |> #, labels = c("No", "Yes"))) |> 
+  mutate(normal = factor(if_else(sn_child=="Normal", 1, 0), levels = c(0,1))) |> #, labels = c("No", "Yes"))) |> 
+  mutate(overw = factor(if_else(sn_child=="Overweight", 1, 0), levels = c(0,1))) |> #, labels = c("No", "Yes"))) |> 
+  mutate(obese = factor(if_else(sn_child=="Obese", 1, 0), levels = c(0,1))) #, labels = c("No", "Yes"))) 
+
 ## Select sample ----
 
 # Urban areas
 
 casen <- casen |> 
-  filter(edad > 17 & id_persona==1 & pco1_a  == 1 & overcrowding <1000 & v12 != -88) |> 
+  filter(!is.na(sn_child) & overcrowding <1000 & v12 != -88) |> 
 droplevels() # Regional representative
+
+length(unique(casen$id_vivienda))
 
 # Add municipality data
 casen_full <- casen |> left_join(casen_com, by = c("folio", "id_persona"))
@@ -266,11 +285,14 @@ casen_full <- casen_full |>
   "r8a", "r8b", "r8c", "r8d", "r8e", "r8f", "r8g", "r8h",
   "food_insecurity_score", "food_insecurity_binary", "food_ins1",
   
-  # Discrimination
-  "r9a", "r9b", "r9c", "r9d", "r9e", "r9o",
+  # Child nutritional state 
+  "sn_child", "underw", "normal", "overw", "obese", "s2c"
   )
+
+# Child sample ---------
+table(casen$s2c) # Nutritional id 
 
 # Save data ---------
 glimpse(casen_full)
-save(casen_full, file=paste0(data_inp, "casen_2022_process", ".RData"))
+save(casen_full, file=paste0(data_inp, "casen_2022_child_process", ".RData"))
 

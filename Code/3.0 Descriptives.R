@@ -15,7 +15,7 @@ data_out <- "Output/"
 
 ## Open data ---- 
 
-casen22 <- rio::import(paste0(data_inp, "casen_2022_process", ".RData"))
+casen22 <- rio::import(paste0(data_inp, "casen_2022_child_process", ".RData"))
 glimpse(casen22)
 
 # Outcomes
