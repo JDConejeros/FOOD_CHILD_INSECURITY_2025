@@ -1,12 +1,12 @@
 # Code 1: Data process ----
 
 ## Settings ----
-source("Code/0.1 Settings.R")
-source("Code/0.2 Functions.R")
+source("Code/0.2 Settings.R")
+source("Code/0.3 Functions.R")
 
 # Only verify packages if not already loaded
 if (!exists("check_packages_loaded") || !check_packages_loaded()) {
-  source("Code/0.0 Setup.R")
+  source("Code/1.0 Setup.R")
 }
 
 # Data path 
@@ -197,7 +197,8 @@ casen <- casen |>
   mutate(underw = factor(if_else(sn_child=="Underweight", 1, 0), levels = c(0,1))) |> #, labels = c("No", "Yes"))) |> 
   mutate(normal = factor(if_else(sn_child=="Normal", 1, 0), levels = c(0,1))) |> #, labels = c("No", "Yes"))) |> 
   mutate(overw = factor(if_else(sn_child=="Overweight", 1, 0), levels = c(0,1))) |> #, labels = c("No", "Yes"))) |> 
-  mutate(obese = factor(if_else(sn_child=="Obese", 1, 0), levels = c(0,1))) #, labels = c("No", "Yes"))) 
+  mutate(obese = factor(if_else(sn_child=="Obese", 1, 0), levels = c(0,1))) |> #, labels = c("No", "Yes"))) 
+  mutate(overw_obs = factor(if_else(sn_child %in% c("Overweight", "Obese"), 1, 0), levels = c(0,1))) #, labels = c("No", "Yes"))) |> 
 
 ## Select sample ----
 
@@ -286,7 +287,7 @@ casen_full <- casen_full |>
   "food_insecurity_score", "food_insecurity_binary", "food_ins1",
   
   # Child nutritional state 
-  "sn_child", "underw", "normal", "overw", "obese", "s2c"
+  "sn_child", "underw", "normal", "overw", "obese", "overw_obs", "s2c"
   )
 
 # Child sample ---------
