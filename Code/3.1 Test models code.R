@@ -100,6 +100,7 @@ sjPlot::tab_model(l1, l2, l3, l4)
 sjPlot::tab_model(l1b, l2b, l3b, l4b)
 
 #broom::tidy(l1, exponentiate = TRUE, conf.int = TRUE, conf.level = 0.95)
+broom::tidy(l1, exponentiate = TRUE,  conf.level = 0.95)
 
 ############################################
 
